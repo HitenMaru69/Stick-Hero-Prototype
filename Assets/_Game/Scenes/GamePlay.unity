@@ -148,7 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d22c84663e9064abe835565b000f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stickPrefeb: {fileID: 5904042752771204062, guid: 74e3dfed2a7ac294192176790ee54aef, type: 3}
+  _stickPrefeb: {fileID: 5712874338525404844, guid: 754f4e1e983662e4abf85d663228be5b, type: 3}
+  _growSpeed: 20
 --- !u!4 &182127381
 Transform:
   m_ObjectHideFlags: 0
