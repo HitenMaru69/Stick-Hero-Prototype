@@ -1,12 +1,17 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject _stickPrefeb;
     [SerializeField] float _growSpeed;
+    [SerializeField] Transform _spawnpoint;
+    [SerializeField] GameObject _groundPrefeb;
+    [SerializeField] GameObject _player;
 
     private bool _isHold = false;
     private GameObject _newObj;
+    private GameObject _lastSpawnObj;
 
     private void Update()
     {
@@ -30,13 +35,15 @@ public class GameManager : MonoBehaviour
             _isHold = false;
             
         }
+
+        if (Input.GetKeyDown(KeyCode.Space)) { SpawnGround(); }
     }
 
     private void SpawnStick()
     {
-        Vector3 playerPosition = transform.position;
-        playerPosition.x = transform.position.x + 0.8f;
-        playerPosition.y = transform.position.y - 0.5f;
+        Vector3 playerPosition = _player.transform.position;
+        playerPosition.x = _player.transform.position.x + 0.7f;
+        playerPosition.y = _player.transform.position.y - 0.9f;
 
         _newObj =Instantiate(_stickPrefeb,playerPosition,Quaternion.identity);
     }
@@ -47,5 +54,13 @@ public class GameManager : MonoBehaviour
             _newObj.transform.localScale.y + _growSpeed * Time.deltaTime,
             _newObj.transform.localScale.z);
 
+    }
+
+    private void SpawnGround()
+    {
+        _lastSpawnObj = Instantiate(_groundPrefeb,_spawnpoint.position, Quaternion.identity);
+        Vector3 newPos = _spawnpoint.position;
+        newPos.x = newPos.x + 3;
+        _spawnpoint.position = newPos;
     }
 }
