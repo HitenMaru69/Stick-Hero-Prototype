@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private bool _isHold = false;
     private GameObject _newObj;
     private GameObject _lastSpawnObj;
+    private bool _isReleasing = false;
+    private float _rotationProgress = 0f;
 
     private void Update()
     {
@@ -33,8 +35,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             _isHold = false;
+            RealeaseStick();
             
         }
+
+        RotateStick();
 
         if (Input.GetKeyDown(KeyCode.Space)) { SpawnGround(); }
     }
@@ -62,5 +67,29 @@ public class GameManager : MonoBehaviour
         Vector3 newPos = _spawnpoint.position;
         newPos.x = newPos.x + 3;
         _spawnpoint.position = newPos;
+    }
+
+    private void RealeaseStick()
+    {
+        _isReleasing = true;
+        _rotationProgress = 0f;
+    }
+
+    private void RotateStick()
+    {
+        if (_isReleasing && _newObj != null)
+        {
+            _rotationProgress += Time.deltaTime * 3f; 
+
+            Quaternion targetRotation = Quaternion.Euler(0, 0, -90);
+            _newObj.transform.rotation = Quaternion.Lerp(Quaternion.identity, targetRotation, _rotationProgress);
+
+            if (_rotationProgress >= 1f)
+            {
+                _isReleasing = false;
+                _rotationProgress = 1f;
+            }
+
+        }
     }
 }
