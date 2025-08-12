@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     private GameObject _lastSpawnObj;
     private bool _isReleasing = false;
     private float _rotationProgress = 0f;
+    private bool _isMoveGround = false;
+    private GameObject _moveObject;
 
     private void Update()
     {
@@ -41,6 +43,11 @@ public class GameManager : MonoBehaviour
 
         RotateStick();
 
+        if (_isMoveGround) { 
+        
+            MoveGround();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space)) { SpawnGround(); }
     }
 
@@ -64,9 +71,10 @@ public class GameManager : MonoBehaviour
     private void SpawnGround()
     {
         _lastSpawnObj = Instantiate(_groundPrefeb,_spawnpoint.position, Quaternion.identity);
-        Vector3 newPos = _spawnpoint.position;
-        newPos.x = newPos.x + 3;
-        _spawnpoint.position = newPos;
+        //Vector3 newPos = _spawnpoint.position;
+        //newPos.x = newPos.x + 3;
+        //_spawnpoint.position = newPos;
+        _isMoveGround = true;
     }
 
     private void RealeaseStick()
@@ -90,6 +98,21 @@ public class GameManager : MonoBehaviour
                 _rotationProgress = 1f;
             }
 
+        }
+    }
+
+    private void MoveGround()
+    {
+        _moveObject = _lastSpawnObj;
+        Vector3 groundpos = _moveObject.transform.position;
+        groundpos.x = _player.transform.position.x;
+
+        _moveObject.transform.position = Vector3.Lerp(_moveObject.transform.position,groundpos,0.1f);
+
+        if (Mathf.Abs(_moveObject.transform.position.x - groundpos.x) < 0.01f)
+        {
+            _moveObject.transform.position = groundpos;
+            _isMoveGround = false;
         }
     }
 }
