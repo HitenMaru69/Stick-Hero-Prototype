@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
             {
                 Vector3 camPos = mainCam.transform.position;
                 float targetX = _player.transform.position.x + 2.5f;
-                camPos.x = Mathf.Lerp(camPos.x, targetX, 0.1f);
+                camPos.x = Mathf.Lerp(camPos.x, targetX, 0.3f);
                 mainCam.transform.position = camPos;
 
                 if (Mathf.Abs(camPos.x - targetX) < 0.01f)
