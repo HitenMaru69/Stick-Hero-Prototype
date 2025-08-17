@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -15,7 +14,16 @@ public class GameManager : MonoBehaviour
     private bool _isReleasing = false;
     private float _rotationProgress = 0f;
     private bool _isMoveGround = false;
+    private bool _isPlayeeCanMove = false;
+    private bool _isOnetime = true;
     private GameObject _moveObject;
+    private bool _shouldCameraFollow = false;
+
+
+    private void Start()
+    {
+        SpawnGround();
+    }
 
     private void Update()
     {
@@ -42,11 +50,8 @@ public class GameManager : MonoBehaviour
         }
 
         RotateStick();
+        PlayerMove();
 
-        if (_isMoveGround) { 
-        
-            MoveGround();
-        }
 
         if (Input.GetKeyDown(KeyCode.Space)) { SpawnGround(); }
     }
@@ -71,10 +76,13 @@ public class GameManager : MonoBehaviour
     private void SpawnGround()
     {
         _lastSpawnObj = Instantiate(_groundPrefeb,_spawnpoint.position, Quaternion.identity);
-        //Vector3 newPos = _spawnpoint.position;
-        //newPos.x = newPos.x + 3;
-        //_spawnpoint.position = newPos;
-        _isMoveGround = true;
+
+            Vector3 newPos = _spawnpoint.position;
+            newPos.x = newPos.x + 3;
+            _spawnpoint.position = newPos;
+     
+        
+        
     }
 
     private void RealeaseStick()
@@ -95,24 +103,50 @@ public class GameManager : MonoBehaviour
             if (_rotationProgress >= 1f)
             {
                 _isReleasing = false;
+                _isPlayeeCanMove = true;
                 _rotationProgress = 1f;
             }
 
         }
     }
 
-    private void MoveGround()
+    private void PlayerMove()
     {
-        _moveObject = _lastSpawnObj;
-        Vector3 groundpos = _moveObject.transform.position;
-        groundpos.x = _player.transform.position.x;
-
-        _moveObject.transform.position = Vector3.Lerp(_moveObject.transform.position,groundpos,0.1f);
-
-        if (Mathf.Abs(_moveObject.transform.position.x - groundpos.x) < 0.01f)
+        if (_isPlayeeCanMove && _lastSpawnObj != null)
         {
-            _moveObject.transform.position = groundpos;
-            _isMoveGround = false;
+            Vector3 targetPos = _lastSpawnObj.transform.position;
+            targetPos.y = _player.transform.position.y;
+
+            _player.transform.position = Vector3.Lerp(_player.transform.position, targetPos, 0.1f);
+
+            if (Vector3.Distance(_player.transform.position, targetPos) < 0.01f)
+            {
+                _player.transform.position = targetPos;
+                _isPlayeeCanMove = false;
+                _shouldCameraFollow = true; 
+                SpawnGround();
+            }
+        }
+
+        if (_shouldCameraFollow)
+        {
+
+            Camera mainCam = Camera.main;
+            if (mainCam != null)
+            {
+                Vector3 camPos = mainCam.transform.position;
+                float targetX = _player.transform.position.x + 2.5f;
+                camPos.x = Mathf.Lerp(camPos.x, targetX, 0.1f);
+                mainCam.transform.position = camPos;
+
+                if (Mathf.Abs(camPos.x - targetX) < 0.01f)
+                {
+                    camPos.x = targetX;
+                    mainCam.transform.position = camPos;
+                    _shouldCameraFollow = false;
+                }
+            }
         }
     }
+
 }
