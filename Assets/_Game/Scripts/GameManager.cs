@@ -2,11 +2,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     [SerializeField] GameObject _stickPrefeb;
     [SerializeField] float _growSpeed;
     [SerializeField] Transform _spawnpoint;
     [SerializeField] GameObject _groundPrefeb;
     [SerializeField] GameObject _player;
+
+    public bool _isPlayeeCanMove = false;
+    public bool isPlayerMoveToStick = false;
 
     private bool _isHold = false;
     private GameObject _newObj;
@@ -14,11 +19,16 @@ public class GameManager : MonoBehaviour
     private bool _isReleasing = false;
     private float _rotationProgress = 0f;
     private bool _isMoveGround = false;
-    private bool _isPlayeeCanMove = false;
+    
     private bool _isOnetime = true;
     private GameObject _moveObject;
     private bool _shouldCameraFollow = false;
 
+    private void Awake()
+    {
+        Instance = this;
+
+    }
 
     private void Start()
     {
@@ -103,7 +113,6 @@ public class GameManager : MonoBehaviour
             if (_rotationProgress >= 1f)
             {
                 _isReleasing = false;
-                _isPlayeeCanMove = true;
                 _rotationProgress = 1f;
             }
 
@@ -112,6 +121,8 @@ public class GameManager : MonoBehaviour
 
     private void PlayerMove()
     {
+
+
         if (_isPlayeeCanMove && _lastSpawnObj != null)
         {
             Vector3 targetPos = _lastSpawnObj.transform.position;
@@ -123,10 +134,14 @@ public class GameManager : MonoBehaviour
             {
                 _player.transform.position = targetPos;
                 _isPlayeeCanMove = false;
-                _shouldCameraFollow = true; 
+                _shouldCameraFollow = true;
                 SpawnGround();
             }
         }
+
+
+
+
 
         if (_shouldCameraFollow)
         {
@@ -148,5 +163,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+
 
 }

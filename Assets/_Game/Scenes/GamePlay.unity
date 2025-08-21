@@ -153,6 +153,8 @@ MonoBehaviour:
   _spawnpoint: {fileID: 1178996767}
   _groundPrefeb: {fileID: 3369393370330808748, guid: 0a3b9fee3da211347951c11f22e37edc, type: 3}
   _player: {fileID: 956187463}
+  _isPlayeeCanMove: 0
+  isPlayerMoveToStick: 0
 --- !u!4 &182127381
 Transform:
   m_ObjectHideFlags: 0
@@ -316,7 +318,7 @@ GameObject:
   - component: {fileID: 956187467}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
